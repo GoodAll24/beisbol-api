@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Jugadores - Gestión de Béisbol</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Gestión de Jugadores de Béisbol</h1>
+    
+    <nav class="nav-menu">
+      <a href="/">Inicio</a>
+      <a href="agregar.html">Agregar Jugador</a>
+    </nav>
+    
+    <div class="list-section">
+      <h2>Lista de Jugadores</h2>
+      
+      <div class="list-controls">
+        <label>
+          Mostrar:
+          <select id="perPage" onchange="changeLimit(this.value)">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+      </div>
+      
+      <table id="jugadoresTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="sortable" onclick="changeSort('nombre')">Nombre &#8597;</th>
+            <th class="sortable" onclick="changeSort('avg')">AVG &#8597;</th>
+            <th class="sortable" onclick="changeSort('hr')">HR &#8597;</th>
+            <th class="sortable" onclick="changeSort('rbi')">RBI &#8597;</th>
+            <th class="sortable" onclick="changeSort('activo')">Activo &#8597;</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="jugadoresBody">
+        </tbody>
+      </table>
+      
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,10 +1,19 @@
 import prisma from '../config/db.js';
 
 export const jugadorModel = {
-  findAll: async () => {
-    return await prisma.jugador.findMany({
-      orderBy: { id: 'asc' }
-    });
+  findAll: async ({ page = 1, limit = 10, sortBy = 'nombre', sortOrder = 'asc' }) => {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      prisma.jugador.findMany({
+        skip,
+        take: limit,
+        orderBy: { [sortBy]: sortOrder }
+      }),
+      prisma.jugador.count()
+    ]);
+
+    return { data, total, totalPages: Math.ceil(total / limit) };
   },
 
   findById: async (id) => {

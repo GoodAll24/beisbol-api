@@ -10,59 +10,17 @@
   <div class="container">
     <h1>Gestión de Jugadores de Béisbol</h1>
     
-    <div class="form-section">
-      <h2 id="formTitle">Agregar Jugador</h2>
-      <form id="jugadorForm">
-        <input type="hidden" id="jugadorId">
-        <div class="form-group">
-          <label for="nombre">Nombre:</label>
-          <input type="text" id="nombre" required>
-        </div>
-        <div class="form-group">
-          <label for="avg">AVG (Promedio):</label>
-          <input type="number" id="avg" step="0.001" min="0" max="1" required>
-        </div>
-        <div class="form-group">
-          <label for="hr">HR (Home Runs):</label>
-          <input type="number" id="hr" min="0" required>
-        </div>
-        <div class="form-group">
-          <label for="rbi">RBI (Carreras Empujadas):</label>
-          <input type="number" id="rbi" min="0" required>
-        </div>
-        <div class="form-group checkbox-group">
-          <label for="activo">
-            <input type="checkbox" id="activo" checked>
-            Jugador Activo
-          </label>
-        </div>
-        <div class="form-buttons">
-          <button type="submit" id="submitBtn" class="btn-primary">Agregar</button>
-          <button type="button" id="cancelBtn" class="btn-secondary" style="display: none;">Cancelar</button>
-        </div>
-      </form>
-    </div>
-
-    <div class="list-section">
-      <h2>Lista de Jugadores</h2>
-      <table id="jugadoresTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>AVG</th>
-            <th>HR</th>
-            <th>RBI</th>
-            <th>Activo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="jugadoresBody">
-        </tbody>
-      </table>
+    <div class="menu-section">
+      <div class="menu-card" onclick="location.href='agregar.html'">
+        <h2>Agregar Jugador</h2>
+        <p>Registrar un nuevo jugador en el sistema</p>
+      </div>
+      
+      <div class="menu-card" onclick="location.href='listar.html'">
+        <h2>Ver Lista</h2>
+        <p>Consultar y gestionar jugadores existentes</p>
+      </div>
     </div>
   </div>
-
-  <script src="/app.js"></script>
 </body>
 </html>
