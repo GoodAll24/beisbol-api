@@ -165,18 +165,15 @@ async function saveJugador() {
 }
 
 window.editJugador = function(id, nombre, avg, hr, rbi, activo) {
-  document.getElementById('jugadorId').value = id;
-  document.getElementById('nombre').value = nombre;
-  document.getElementById('avg').value = avg;
-  document.getElementById('hr').value = hr;
-  document.getElementById('rbi').value = rbi;
-  document.getElementById('activo').checked = activo;
-
-  document.getElementById('formTitle').textContent = 'Editar Jugador';
-  document.getElementById('submitBtn').textContent = 'Actualizar';
-  document.getElementById('cancelBtn').style.display = 'inline-block';
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const params = new URLSearchParams({
+    id: id,
+    nombre: nombre,
+    avg: avg,
+    hr: hr,
+    rbi: rbi,
+    activo: activo
+  });
+  window.location.href = `/agregar.html?${params.toString()}`;
 };
 
 window.deleteJugador = async function(id) {

@@ -51,9 +51,20 @@
 
   <script src="/app.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      setupForm();
-    });
+    const params = new URLSearchParams(window.location.search);
+    
+    if (params.has('id')) {
+      document.getElementById('jugadorId').value = params.get('id');
+      document.getElementById('nombre').value = params.get('nombre');
+      document.getElementById('avg').value = params.get('avg');
+      document.getElementById('hr').value = params.get('hr');
+      document.getElementById('rbi').value = params.get('rbi');
+      document.getElementById('activo').checked = params.get('activo') === 'true';
+      
+      document.getElementById('formTitle').textContent = 'Editar Jugador';
+      document.getElementById('submitBtn').textContent = 'Actualizar';
+      document.getElementById('cancelBtn').style.display = 'inline-block';
+    }
   </script>
 </body>
 </html>
