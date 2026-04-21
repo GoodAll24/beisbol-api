@@ -8,7 +8,8 @@ export const jugadorModel = {
       prisma.jugador.findMany({
         skip,
         take: limit,
-        orderBy: { [sortBy]: sortOrder }
+        orderBy: { [sortBy]: sortOrder },
+        // select: { nombre: true, activo: true, avg: true, rbi: true, activo: true },
       }),
       prisma.jugador.count()
     ]);

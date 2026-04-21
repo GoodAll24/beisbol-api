@@ -45,8 +45,8 @@ function renderJugadores(jugadores) {
 
   jugadores.forEach(jugador => {
     const tr = document.createElement('tr');
+    // <td>${jugador.id}</td>
     tr.innerHTML = `
-      <td>${jugador.id}</td>
       <td>${jugador.nombre}</td>
       <td>${jugador.avg.toFixed(3)}</td>
       <td>${jugador.hr}</td>
