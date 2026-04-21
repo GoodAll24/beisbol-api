@@ -247,6 +247,9 @@ Abrir `http://localhost:3000` en el navegador.
 
 - **Model** (`src/models/`): Acceso a datos, interactúa con Prisma
 - **View** (`public/`): Interfaz de usuario (HTML/CSS/JS)
+  - `index.html`: Menú principal
+  - `agregar.html`: Formulario para agregar/editar
+  - `listar.html`: Tabla con paginación y ordenamiento
 - **Controller** (`src/controllers/`): Lógica de negocio, valida y procesa
 
 ---
@@ -275,3 +278,115 @@ Abrir `http://localhost:3000` en el navegador.
 
 4. **Error de conexión a PostgreSQL**
    - Solución: Verificar credenciales en `.env` (formato: `usuario:contraseña@host:puerto/bd`)
+
+---
+
+## Paso 14: Páginas Separadas
+
+Para mejor UX, la aplicación se separó en 3 páginas:
+
+### Archivos Creados
+
+| Archivo           | Descripción                                    |
+|-------------------|-----------------------------------------------|
+| `public/index.html`    | Menú con tarjetas clickeables              |
+| `public/agregar.html`  | Formulario para agregar/editar jugadores  |
+| `public/listar.html`  | Tabla con jugadores y controles de paginación |
+
+### Navegación
+
+Todas las páginas incluyen un menú de navegación:
+```html
+<nav class="nav-menu">
+  <a href="/">Inicio</a>
+  <a href="agregar.html">Agregar Jugador</a>
+  <a href="listar.html">Ver Lista</a>
+</nav>
+```
+
+---
+
+## Paso 15: Paginado y Ordenamiento
+
+### Cambios en el Modelo (`src/models/jugador.js`)
+
+Se agregó soporte para paginación y ordenamiento:
+
+```javascript
+findAll: async ({ page = 1, limit = 10, sortBy = 'nombre', sortOrder = 'asc' }) => {
+  const skip = (page - 1) * limit;
+
+  const [data, total] = await Promise.all([
+    prisma.jugador.findMany({
+      skip,
+      take: limit,
+      orderBy: { [sortBy]: sortOrder }
+    }),
+    prisma.jugador.count()
+  ]);
+
+  return { data, total, totalPages: Math.ceil(total / limit) };
+}
+```
+
+### Cambios en el Controlador (`src/controllers/jugadorController.js`)
+
+El endpoint GET ahora lee query params y valida campos:
+
+```javascript
+getAll: async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sortBy = req.query.sortBy || 'nombre';
+  const sortOrder = req.query.sortOrder || 'asc';
+
+  const allowedSort = ['nombre', 'avg', 'hr', 'rbi', 'activo'];
+  if (!allowedSort.includes(sortBy)) {
+    return res.status(400).json({ error: 'Campo de ordenamiento inválido' });
+  }
+
+  const { data: jugadores, total, totalPages } = await jugadorModel.findAll({
+    page, limit, sortBy, sortOrder
+  });
+
+  res.json({
+    data: jugadores,
+    pagination: { page, limit, total, totalPages }
+  });
+}
+```
+
+### Cambios en el Frontend (`public/app.js`)
+
+- Estados: `currentPage`, `currentLimit`, `currentSortBy`, `currentSortOrder`
+- Funciones: `loadJugadores()`, `renderPagination()`, `changePage()`, `changeLimit()`, `changeSort()`
+- Selector de items por página: 5, 10, 25, 50
+
+### Interfaz de Usuario
+
+En `listar.html`:
+- Selector de cantidad de items por página
+- Headers de tabla clickeables para ordenar
+- Botones de paginación (Anterior, números, Siguiente)
+- Info: "Página X de Y (Z total)"
+
+---
+
+## Parámetros de API Explicados
+
+| Parámetro   | Valores                      | Default | Descripción          |
+|-------------|-------------------------------|---------|----------------------|
+| page        | 1, 2, 3...                    | 1       | Página actual        |
+| limit       | 5, 10, 25, 50                 | 10      | Items por página     |
+| sortBy      | nombre, avg, hr, rbi, activo  | nombre  | Campo de ordenamiento |
+| sortOrder   | asc, desc                     | asc     | Dirección            |
+
+### URLs de Ejemplo
+
+```
+/api/jugadores                    → Default (page=1, limit=10, sortBy=nombre, sortOrder=asc)
+/api/jugadores?page=2             → Página 2
+/api/jugadores?limit=25           → 25 items por página
+/api/jugadores?sortBy=hr&sortOrder=desc  → Ordenar por HR descendente
+/api/jugadores?page=3&limit=50    → Página 3 con 50 items
+```

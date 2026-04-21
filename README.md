@@ -4,7 +4,8 @@ API REST para la gestión de jugadores de béisbol con operaciones CRUD completa
 
 ## Descripción
 
-Sistema de gestión de jugadores de béisbol desarrollado con Node.js, Express, Prisma ORM y PostgreSQL. Cumple con los requisitos de la asignatura Práctica Profesional:
+Sistema de gestión de jugadores de béisbol desarrollado con Node.js, Express, Prisma ORM y PostgreSQL.
+Criterios:
 - CRUD completo (Create, Read, Update, Delete)
 - 3 tipos de datos distintos: String (nombre), Float (avg), Int (hr, rbi), Boolean (activo)
 - Estructura profesional MVC
@@ -34,7 +35,9 @@ beisbol-api/
 │   │   └── jugador.js         # Modelo de datos
 │   └── app.js                 # Servidor Express
 ├── public/
-│   ├── index.html             # Interfaz de usuario
+│   ├── index.html             # Página de inicio (menú)
+│   ├── agregar.html           # Formulario para agregar/editar
+│   ├── listar.html            # Lista con paginación
 │   ├── styles.css             # Estilos
 │   └── app.js                 # Lógica del cliente
 ├── .env                       # Variables de entorno
@@ -98,26 +101,55 @@ beisbol-api/
 
 ## Endpoints de la API
 
-| Método | Endpoint           | Descripción                |
-|--------|--------------------|----------------------------|
-| GET    | /api/jugadores     | Listar todos los jugadores |
-| GET    | /api/jugadores/:id | Obtener un jugador por ID  |
-| POST   | /api/jugadores     | Crear nuevo jugador        |
-| PUT    | /api/jugadores/:id | Actualizar un jugador      |
-| DELETE | /api/jugadores/:id | Eliminar un jugador        |
+| Método | Endpoint                      | Descripción                         |
+|--------|--------------------------------|-------------------------------------|
+| GET    | /api/jugadores                | Listar con paginación y ordenamiento |
+| GET    | /api/jugadores/:id            | Obtener un jugador por ID           |
+| POST   | /api/jugadores                | Crear nuevo jugador                 |
+| PUT    | /api/jugadores/:id            | Actualizar un jugador               |
+| DELETE | /api/jugadores/:id            | Eliminar un jugador                 |
+
+### Parámetros de Query (GET /api/jugadores)
+
+| Parámetro   | Tipo    | Default | Descripción                          |
+|-------------|---------|---------|--------------------------------------|
+| page        | integer | 1       | Número de página                     |
+| limit       | integer | 10      | Items por página (5, 10, 25, 50)    |
+| sortBy      | string  | nombre  | Campo a ordenar (nombre, avg, hr, rbi, activo) |
+| sortOrder   | string  | asc     | Dirección (asc, desc)                |
+
+### Ejemplo de Respuesta
+
+```json
+{
+  "data": [
+    { "id": 1, "nombre": "Juan Pérez", "avg": 0.350, "hr": 25, "rbi": 85, "activo": true }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 25,
+    "totalPages": 3
+  }
+}
+```
 
 ### Ejemplos de Uso
+
+**Listar jugadores (con paginación y ordenamiento):**
+```bash
+# Página 1, 10 items, ordenar por nombre ASC
+curl "http://localhost:3000/api/jugadores?page=1&limit=10&sortBy=nombre&sortOrder=asc"
+
+# Página 2, 25 items, ordenar por hr DESC
+curl "http://localhost:3000/api/jugadores?page=2&limit=25&sortBy=hr&sortOrder=desc"
+```
 
 **Crear jugador:**
 ```bash
 curl -X POST http://localhost:3000/api/jugadores \
   -H "Content-Type: application/json" \
   -d '{"nombre": "Juan Pérez", "avg": 0.350, "hr": 25, "rbi": 85, "activo": true}'
-```
-
-**Listar jugadores:**
-```bash
-curl http://localhost:3000/api/jugadores
 ```
 
 **Actualizar jugador:**
