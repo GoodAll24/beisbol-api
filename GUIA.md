@@ -203,6 +203,13 @@ Configura el servidor:
 - Colores profesionales
 
 ### JavaScript (`public/app.js`)
+
+**Importante - Auto-inicialización**: `app.js` detecta automáticamente los elementos por su ID:
+- Si existe `#jugadorForm` → llama `setupForm()` automáticamente
+- Si existe `#jugadoresBody` → llama `loadJugadores()` automáticamente
+
+**NO agregar scripts `DOMContentLoaded` adicionales en los HTML** - causa errores como doble submit.
+
 - Carga jugadores del API
 - Envía datos al API
 - Maneja edición y eliminación
@@ -304,6 +311,12 @@ Todas las páginas incluyen un menú de navegación:
 </nav>
 ```
 
+**Modo edición**: Al presionar "Editar" en la lista, se navega a `agregar.html` con query params:
+```
+agregar.html?id=1&nombre=Juan&avg=0.350&hr=25&rbi=85&activo=true
+```
+`agregar.html` detecta estos parámetros y completa el formulario automáticamente.
+
 ---
 
 ## Paso 15: Paginado y Ordenamiento
@@ -389,4 +402,16 @@ En `listar.html`:
 /api/jugadores?limit=25           → 25 items por página
 /api/jugadores?sortBy=hr&sortOrder=desc  → Ordenar por HR descendente
 /api/jugadores?page=3&limit=50    → Página 3 con 50 items
+
+---
+
+## Errores del Frontend y Soluciones
+
+1. **Jugador se crea dos veces al enviar formulario**
+   - Causa: Hay dos event listeners de submit (uno en `app.js` y otro en `agregar.html`)
+   - Solución: NO agregar `DOMContentLoaded` con `setupForm()` en los HTML - `app.js` ya lo hace automáticamente
+
+2. **Botón EDITAR no funciona**
+   - Causa: `editJugador()` intenta llenar campos que no existen en `listar.html`
+   - Solución: El edit navega a `agregar.html?id=1&nombre=...` (query params), y el HTML lee esos parámetros al cargar
 ```
